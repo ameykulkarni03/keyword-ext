@@ -1,20 +1,39 @@
 document.getElementById('checkPage').addEventListener('click', () => {
+
   chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+
     chrome.scripting.executeScript({
       target: { tabId: tabs[0].id },
       function: checkKeywordsOnPage
     }, (results) => {
+
       const keywords = results[0].result;
+      
       const keywordList = document.getElementById('keywordList');
       keywordList.innerHTML = '';
+
       keywords.forEach(keyword => {
+      
         const div = document.createElement('div');
         div.classList.add('keywordItem');
-        div.textContent = `${keyword.word}: ${keyword.density}%`;
+      
+        const word = document.createElement('span');
+        word.textContent = `${keyword.word}:`;
+        
+        const density = document.createElement('span');
+        density.textContent = `${keyword.density}%`;
+        
+        div.appendChild(word);
+        div.appendChild(density);
+        
         keywordList.appendChild(div);
+      
       });
+
     });
+
   });
+
 });
 
 function checkKeywordsOnPage() {
