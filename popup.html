@@ -2,15 +2,15 @@
 <html>
 <head>
   <title>Keyword Density Checker</title>
-  
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
-
+    
     body {
       font-family: 'Open Sans', sans-serif;
-      color: #3d4144;
-      background: #f2f2f2;  
+      color: #ffffff;
+      background: #154687;  
       padding: 20px;
+      text-align: center;
     }
     
     h1 {
@@ -18,52 +18,82 @@
       font-weight: 600;
       margin-bottom: 15px;
     }
-    
-    button {
-      background: #557b83;
-      color: #fff;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 3px;
-      cursor: pointer;  
-      transition: background 0.3s ease;
+
+    select, table {
+      color: black;
+      background: white;
     }
-    
+
+    button {
+      background: #FAE81D;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 16px 48px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-right: 10px;
+      margin-bottom: 20px;
+    }
+
     button:hover {
       background: #415b63;
     }
-    
+
     #keywordList {
       margin-top: 20px;  
     }
-    
-    .keywordItem {
-      background: #fff;
-      padding: 15px;
-      border-radius: 5px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-      font-size: 16px;
-      margin-bottom: 10px;
-    }
-    
-    .keywordItem:last-child {
-      margin-bottom: 0;
+
+    .keywordTable {
+      width: 100%;
+      border-collapse: collapse;
     }
 
+    .keywordTable, .keywordTable th, .keywordTable td {
+      border: 1px solid black;
+    }
+
+    .keywordTable th, .keywordTable td {
+      padding: 10px;
+      text-align: left;
+    }
+    
+    select {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 15px;
+      border: 2px solid #557b83;
+      border-radius: 5px;
+      background-color: white;
+      color: #154687;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    select:hover {
+      border-color: #415b63;
+    }
   </style>
-  
 </head>
 
 <body>
-
   <h1>Keyword Density</h1>
   
+  <select id="phraseLength">
+    <option value="1">One-word Phrases</option>
+    <option value="2">Two-word Phrases</option>
+    <option value="3">Three-word Phrases</option>
+  </select>
+
   <button id="checkPage">Check This Page</button>
   
-  <div id="keywordList"></div>
+  <div id="keywordList">
+    <!-- Table will be dynamically inserted here -->
+  </div>
 
   <script src="popup.js"></script>
 
 </body>
-
 </html>
