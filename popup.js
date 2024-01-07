@@ -1,52 +1,44 @@
 document.getElementById('checkPage').addEventListener('click', () => {
-
+  const phraseLength = parseInt(document.getElementById('phraseLength').value);
   chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-
-    chrome.scripting.executeScript({
-      target: { tabId: tabs[0].id },
-      function: checkKeywordsOnPage
-    }, (results) => {
-
-      const keywords = results[0].result;
-      
-      const keywordList = document.getElementById('keywordList');
-      keywordList.innerHTML = '';
-
-      keywords.forEach(keyword => {
-      
-        const div = document.createElement('div');
-        div.classList.add('keywordItem');
-      
-        const word = document.createElement('span');
-        word.textContent = `${keyword.word}:`;
-        
-        const density = document.createElement('span');
-        density.textContent = `${keyword.density}%`;
-        
-        div.appendChild(word);
-        div.appendChild(density);
-        
-        keywordList.appendChild(div);
-      
-      });
-
-    });
-
+    chrome.tabs.sendMessage(tabs[0].id, { action: "calculateDensity", length: phraseLength });
   });
-
 });
 
-function checkKeywordsOnPage() {
-  const text = document.body.innerText;
-  const words = text.toLowerCase().match(/\b(\w+)\b/g).filter(word => word.length > 2 && !['and', 'the', 'for'].includes(word));
-  const wordCounts = words.reduce((counts, word) => {
-    counts[word] = (counts[word] || 0) + 1;
-    return counts;
-  }, {});
-  const totalWords = words.length;
-  const keywordDensities = Object.entries(wordCounts).map(([word, count]) => {
-    return { word, density: (count / totalWords * 100).toFixed(2) };
+chrome.runtime.onMessage.addListener((request) => {
+  if (request.action === "displayKeywords") {
+    displayKeywords(request.keywords);
+  }
+});
+
+function displayKeywords(keywords) {
+  const keywordList = document.getElementById('keywordList');
+  keywordList.innerHTML = '';
+
+  const table = document.createElement('table');
+  table.classList.add('keywordTable');
+
+  const thead = document.createElement('thead');
+  const headerRow = document.createElement('tr');
+  ['Phrase', 'Frequency', 'Density (%)'].forEach(text => {
+    const th = document.createElement('th');
+    th.textContent = text;
+    headerRow.appendChild(th);
   });
-  return keywordDensities.sort((a, b) => b.density - a.density).slice(0, 10);
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+  keywords.forEach(keyword => {
+    const row = document.createElement('tr');
+    ['word', 'frequency', 'density'].forEach(key => {
+      const td = document.createElement('td');
+      td.textContent = keyword[key];
+      row.appendChild(td);
+    });
+    tbody.appendChild(row);
+  });
+  table.appendChild(tbody);
+
+  keywordList.appendChild(table);
 }
-  
